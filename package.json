@@ -1,0 +1,16 @@
+{
+  "name": "toyrobot",
+  "version": "1.0.0",
+  "description": "A Toy Robot Simulator",
+  "main": "main.js",
+  "scripts": {
+    "test": "node test",
+    "dev": "node main"
+  },
+  "author": "Hoai Lam Tran",
+  "license": "ISC",
+  "dependencies": {
+    "readline": "^1.3.0"
+  },
+  "devDependencies": {}
+}
