@@ -9,7 +9,7 @@ module.exports = class Blueprint {
     this.obstacles = null;
     this.initialPlace = false;
     this.cardinalDirection = null;
-    this.validCardinalDirection = ["north", "east", "west", "south"];
+    this.validCardinalDirection = ["north", "east", "south", "west"];
     this.outOfBoundMessage =
       "This command will place the robot out of the table. Please give another location";
     this.currentCoordinateWarning =
@@ -74,15 +74,27 @@ module.exports = class Blueprint {
 
   // Based on Cartesian plane concept, with (0,0) as SW and (4,4) as NE
   move() {
+    let xCheck = this.x;
+    let yCheck = this.y;
     switch (this.cardinalDirection) {
       case "north":
-        this.y++;
-        break;
+        if (
+          this.obstacles.every(obstacle => {
+            let { x: xObstacle, y: yObstacle } = obstacle;
+            return this.x == xObstacle && ++yCheck !== yObstacle;
+          })
+        ) {
+          this.y++;
+          break;
+        } else {
+          console.log(this.blockedAccessMessage);
+          break;
+        }
       case "east":
         if (
           this.obstacles.every(obstacle => {
             let { x: xObstacle, y: yObstacle } = obstacle;
-            return this.x !== xObstacle && this.y !== yObstacle;
+            return ++xCheck == xObstacle && this.y !== yObstacle;
           })
         ) {
           this.x++;
@@ -92,11 +104,31 @@ module.exports = class Blueprint {
           break;
         }
       case "south":
-        this.y--;
-        break;
+        if (
+          this.obstacles.every(obstacle => {
+            let { x: xObstacle, y: yObstacle } = obstacle;
+            return this.y == xObstacle && --yCheck !== yObstacle;
+          })
+        ) {
+          this.y--;
+          break;
+        } else {
+          console.log(this.blockedAccessMessage);
+          break;
+        }
       case "west":
-        this.x--;
-        break;
+        if (
+          this.obstacles.every(obstacle => {
+            let { x: xObstacle, y: yObstacle } = obstacle;
+            return --xCheck == xObstacle && this.y !== yObstacle;
+          })
+        ) {
+          this.x--;
+          break;
+        } else {
+          console.log(this.blockedAccessMessage);
+          break;
+        }
     }
   }
 
@@ -115,7 +147,7 @@ module.exports = class Blueprint {
             this.cardinalDirection = "east";
             break;
           case "west":
-            this.cardinalDirection = "south";
+            this.cardinalDirection = "west";
             break;
         }
         break;
