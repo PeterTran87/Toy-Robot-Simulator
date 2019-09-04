@@ -20,13 +20,13 @@ module.exports = class Blueprint {
       "west"
     ];
     this.outOfBoundMessage =
-      "This command will place the robot out of the table. Please give another location";
+      "This command will place the robot out of the table. Please give another location.";
     this.currentCoordinateWarning =
-      "This is the current coordinate of the robot. Please give another location";
+      "This is the current coordinate of the robot. Please give another location.";
     this.invalidAvoidanceMessage =
-      "This coordinate is outside of the table. Please give another location";
+      "This coordinate is outside of the table. Please give another location.";
     this.blockedAccessMessage =
-      "This coordinate is blocked. Please give another directive";
+      "This coordinate is blocked. Please give another directive.";
     this.invalidMessage = "Invalid command. Please try again.";
   }
 
@@ -83,15 +83,16 @@ module.exports = class Blueprint {
 
   // Based on Cartesian plane concept, with (0,0) as SW and (4,4) as NE
   move() {
-    let xCheck = this.x;
-    let yCheck = this.y;
+    let xPlusCheck = this.x + 1;
+    let yPlusCheck = this.y + 1;
+    let xMinusCheck = this.x - 1;
+    let yMinusCheck = this.y - 1;
     switch (this.cardinalDirection) {
       case "north": {
-        let subYCheck = ++yCheck;
         if (
-          this.obstacles.every(obstacle => {
+          !this.obstacles.some(obstacle => {
             let { x: xObstacle, y: yObstacle } = obstacle;
-            return this.x == xObstacle && subYCheck !== yObstacle;
+            return this.x === xObstacle && yPlusCheck === yObstacle;
           })
         ) {
           this.y++;
@@ -102,12 +103,10 @@ module.exports = class Blueprint {
         }
       }
       case "north east": {
-        let subXCheck = ++xCheck;
-        let subYCheck = ++yCheck;
         if (
-          this.obstacles.every(obstacle => {
+          !this.obstacles.some(obstacle => {
             let { x: xObstacle, y: yObstacle } = obstacle;
-            return subXCheck == xObstacle && subYCheck !== yObstacle;
+            return xPlusCheck === xObstacle && yPlusCheck === yObstacle;
           })
         ) {
           this.x++;
@@ -119,11 +118,10 @@ module.exports = class Blueprint {
         }
       }
       case "east": {
-        let subXCheck = ++xCheck;
         if (
-          this.obstacles.every(obstacle => {
+          !this.obstacles.some(obstacle => {
             let { x: xObstacle, y: yObstacle } = obstacle;
-            return subXCheck == xObstacle && this.y !== yObstacle;
+            return xPlusCheck === xObstacle && this.y === yObstacle;
           })
         ) {
           this.x++;
@@ -134,12 +132,10 @@ module.exports = class Blueprint {
         }
       }
       case "south east": {
-        let subXCheck = ++xCheck;
-        let subYCheck = --yCheck;
         if (
-          this.obstacles.every(obstacle => {
+          !this.obstacles.some(obstacle => {
             let { x: xObstacle, y: yObstacle } = obstacle;
-            return subXCheck == xObstacle && subYCheck !== yObstacle;
+            return xPlusCheck === xObstacle && yMinusCheck === yObstacle;
           })
         ) {
           this.x++;
@@ -151,11 +147,10 @@ module.exports = class Blueprint {
         }
       }
       case "south": {
-        let subYCheck = --yCheck;
         if (
-          this.obstacles.every(obstacle => {
+          !this.obstacles.some(obstacle => {
             let { x: xObstacle, y: yObstacle } = obstacle;
-            return this.y == xObstacle && subYCheck !== yObstacle;
+            return this.y === xObstacle && yMinusCheck === yObstacle;
           })
         ) {
           this.y--;
@@ -166,12 +161,10 @@ module.exports = class Blueprint {
         }
       }
       case "south west": {
-        let subXCheck = --xCheck;
-        let subYCheck = --yCheck;
         if (
-          this.obstacles.every(obstacle => {
+          !this.obstacles.some(obstacle => {
             let { x: xObstacle, y: yObstacle } = obstacle;
-            return subXCheck == xObstacle && subYCheck !== yObstacle;
+            return xMinusCheck === xObstacle && yMinusCheck === yObstacle;
           })
         ) {
           this.x--;
@@ -183,11 +176,10 @@ module.exports = class Blueprint {
         }
       }
       case "west": {
-        let subXCheck = --xCheck;
         if (
-          this.obstacles.every(obstacle => {
+          !this.obstacles.some(obstacle => {
             let { x: xObstacle, y: yObstacle } = obstacle;
-            return subXCheck == xObstacle && this.y !== yObstacle;
+            return xMinusCheck === xObstacle && this.y === yObstacle;
           })
         ) {
           this.x--;
@@ -199,9 +191,9 @@ module.exports = class Blueprint {
       }
       case "north west": {
         if (
-          this.obstacles.every(obstacle => {
+          !this.obstacles.some(obstacle => {
             let { x: xObstacle, y: yObstacle } = obstacle;
-            return --xCheck == xObstacle && subYCheck !== yObstacle;
+            return xMinusCheck === xObstacle && yPlusCheck === yObstacle;
           })
         ) {
           this.x--;

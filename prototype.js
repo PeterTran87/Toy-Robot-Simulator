@@ -23,21 +23,49 @@ module.exports = class RobotPrototype extends Blueprint {
       case directive === "move":
         if (
           (this.x === 0 &&
-            (this.cardinalDirection !== "east" ||
-              this.cardinalDirection !== "south east" ||
-              this.cardinalDirection !== "south")) ||
-          (this.x === 5 &&
-            (this.cardinalDirection !== "north" ||
-              this.cardinalDirection !== "north west" ||
-              this.cardinalDirection !== "west")) ||
-          (this.y === 0 &&
-            (this.cardinalDirection !== "north" ||
-              this.cardinalDirection !== "north east" ||
+            this.y === 0 &&
+            (this.cardinalDirection !== "north" &&
+              this.cardinalDirection !== "north east" &&
               this.cardinalDirection !== "east")) ||
+          (this.x > 0 &&
+            this.x < 5 &&
+            this.y === 0 &&
+            (this.cardinalDirection === "south" &&
+              this.cardinalDirection === "south west" &&
+              this.cardinalDirection === "south east")) ||
+          (this.x === 5 &&
+            this.y === 5 &&
+            (this.cardinalDirection !== "north" &&
+              this.cardinalDirection !== "north west" &&
+              this.cardinalDirection !== "west")) ||
+          (this.x === 5 &&
+            this.y === 0 &&
+            (this.cardinalDirection !== "north" &&
+              this.cardinalDirection !== "north west" &&
+              this.cardinalDirection !== "west")) ||
+          (this.x === 5 &&
+            this.y > 0 &&
+            this.y < 5 &&
+            (this.cardinalDirection === "east" &&
+              this.cardinalDirection === "south east" &&
+              this.cardinalDirection === "north east")) ||
+          (this.y > 0 &&
+            this.y < 5 &&
+            this.x === 0 &&
+            (this.cardinalDirection === "west" &&
+              this.cardinalDirection === "south west" &&
+              this.cardinalDirection === "north west")) ||
           (this.y === 5 &&
-            (this.cardinalDirection !== "west" ||
-              this.cardinalDirection !== "south west" ||
-              this.cardinalDirection !== "south"))
+            this.x === 0 &&
+            (this.cardinalDirection !== "east" &&
+              this.cardinalDirection !== "south east" &&
+              this.cardinalDirection !== "south")) ||
+          (this.y === 5 &&
+            this.x > 0 &&
+            this.x < 5 &&
+            (this.cardinalDirection === "north" &&
+              this.cardinalDirection === "north west" &&
+              this.cardinalDirection === "north east"))
         ) {
           this.commandString = "";
           this.action = "";
@@ -66,10 +94,11 @@ module.exports = class RobotPrototype extends Blueprint {
   // Validate the directive
   validateDirective(commandString) {
     let rawCommands = commandString.split(" ");
-    let [directive, location] = rawCommands.filter(
+    let [directive, location, subLocation] = rawCommands.filter(
       rawCommand => rawCommand !== ""
     );
     this.commandString = "";
+    if (subLocation) location = location.concat(" ", subLocation);
 
     if (!this.onTable) {
       if (directive === "place") {
