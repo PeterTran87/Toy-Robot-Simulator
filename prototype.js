@@ -25,19 +25,27 @@ module.exports = class RobotPrototype extends Blueprint {
           (this.x === 0 && this.cardinalDirection === "west") ||
           (this.x === 0 &&
             this.y === 5 &&
-            this.cardinalDirection === "north west") ||
+            (this.cardinalDirection !== "east" ||
+              this.cardinalDirection !== "south east" ||
+              this.cardinalDirection !== "south")) ||
           (this.x === 5 && this.cardinalDirection === "east") ||
           (this.x === 5 &&
             this.y === 0 &&
-            this.cardinalDirection === "south east") ||
+            (this.cardinalDirection !== "north" ||
+              this.cardinalDirection !== "north west" ||
+              this.cardinalDirection !== "west")) ||
           (this.y === 0 && this.cardinalDirection === "south") ||
           (this.x === 0 &&
             this.y === 0 &&
-            this.cardinalDirection === "south west") ||
+            (this.cardinalDirection !== "north" ||
+              this.cardinalDirection !== "north east" ||
+              this.cardinalDirection !== "east")) ||
           (this.y === 5 && this.cardinalDirection === "north") ||
           (this.x === 5 &&
             this.y === 5 &&
-            this.cardinalDirection === "north east")
+            (this.cardinalDirection !== "west" ||
+              this.cardinalDirection !== "south west" ||
+              this.cardinalDirection !== "south"))
         ) {
           this.commandString = "";
           this.action = "";
