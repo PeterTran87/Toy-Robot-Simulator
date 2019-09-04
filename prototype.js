@@ -23,9 +23,21 @@ module.exports = class RobotPrototype extends Blueprint {
       case directive === "move":
         if (
           (this.x === 0 && this.cardinalDirection === "west") ||
+          (this.x === 0 &&
+            this.y === 5 &&
+            this.cardinalDirection === "north west") ||
           (this.x === 5 && this.cardinalDirection === "east") ||
+          (this.x === 5 &&
+            this.y === 0 &&
+            this.cardinalDirection === "south east") ||
           (this.y === 0 && this.cardinalDirection === "south") ||
-          (this.y === 5 && this.cardinalDirection === "north")
+          (this.x === 0 &&
+            this.y === 0 &&
+            this.cardinalDirection === "south west") ||
+          (this.y === 5 && this.cardinalDirection === "north") ||
+          (this.x === 5 &&
+            this.y === 5 &&
+            this.cardinalDirection === "north east")
         ) {
           this.commandString = "";
           this.action = "";

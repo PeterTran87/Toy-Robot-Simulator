@@ -9,7 +9,16 @@ module.exports = class Blueprint {
     this.obstacles = null;
     this.initialPlace = false;
     this.cardinalDirection = null;
-    this.validCardinalDirection = ["north", "east", "south", "west"];
+    this.validCardinalDirection = [
+      "north west",
+      "north",
+      "north east",
+      "east",
+      "south east",
+      "south",
+      "south west",
+      "west"
+    ];
     this.outOfBoundMessage =
       "This command will place the robot out of the table. Please give another location";
     this.currentCoordinateWarning =
@@ -77,11 +86,12 @@ module.exports = class Blueprint {
     let xCheck = this.x;
     let yCheck = this.y;
     switch (this.cardinalDirection) {
-      case "north":
+      case "north": {
+        let subYCheck = ++yCheck;
         if (
           this.obstacles.every(obstacle => {
             let { x: xObstacle, y: yObstacle } = obstacle;
-            return this.x == xObstacle && ++yCheck !== yObstacle;
+            return this.x == xObstacle && subYCheck !== yObstacle;
           })
         ) {
           this.y++;
@@ -90,11 +100,30 @@ module.exports = class Blueprint {
           console.log(this.blockedAccessMessage);
           break;
         }
-      case "east":
+      }
+      case "north east": {
+        let subXCheck = ++xCheck;
+        let subYCheck = ++yCheck;
         if (
           this.obstacles.every(obstacle => {
             let { x: xObstacle, y: yObstacle } = obstacle;
-            return ++xCheck == xObstacle && this.y !== yObstacle;
+            return subXCheck == xObstacle && subYCheck !== yObstacle;
+          })
+        ) {
+          this.x++;
+          this.y++;
+          break;
+        } else {
+          console.log(this.blockedAccessMessage);
+          break;
+        }
+      }
+      case "east": {
+        let subXCheck = ++xCheck;
+        if (
+          this.obstacles.every(obstacle => {
+            let { x: xObstacle, y: yObstacle } = obstacle;
+            return subXCheck == xObstacle && this.y !== yObstacle;
           })
         ) {
           this.x++;
@@ -103,11 +132,30 @@ module.exports = class Blueprint {
           console.log(this.blockedAccessMessage);
           break;
         }
-      case "south":
+      }
+      case "south east": {
+        let subXCheck = ++xCheck;
+        let subYCheck = --yCheck;
         if (
           this.obstacles.every(obstacle => {
             let { x: xObstacle, y: yObstacle } = obstacle;
-            return this.y == xObstacle && --yCheck !== yObstacle;
+            return subXCheck == xObstacle && subYCheck !== yObstacle;
+          })
+        ) {
+          this.x++;
+          this.y--;
+          break;
+        } else {
+          console.log(this.blockedAccessMessage);
+          break;
+        }
+      }
+      case "south": {
+        let subYCheck = --yCheck;
+        if (
+          this.obstacles.every(obstacle => {
+            let { x: xObstacle, y: yObstacle } = obstacle;
+            return this.y == xObstacle && subYCheck !== yObstacle;
           })
         ) {
           this.y--;
@@ -116,11 +164,30 @@ module.exports = class Blueprint {
           console.log(this.blockedAccessMessage);
           break;
         }
-      case "west":
+      }
+      case "south west": {
+        let subXCheck = --xCheck;
+        let subYCheck = --yCheck;
         if (
           this.obstacles.every(obstacle => {
             let { x: xObstacle, y: yObstacle } = obstacle;
-            return --xCheck == xObstacle && this.y !== yObstacle;
+            return subXCheck == xObstacle && subYCheck !== yObstacle;
+          })
+        ) {
+          this.x--;
+          this.y--;
+          break;
+        } else {
+          console.log(this.blockedAccessMessage);
+          break;
+        }
+      }
+      case "west": {
+        let subXCheck = --xCheck;
+        if (
+          this.obstacles.every(obstacle => {
+            let { x: xObstacle, y: yObstacle } = obstacle;
+            return subXCheck == xObstacle && this.y !== yObstacle;
           })
         ) {
           this.x--;
@@ -129,6 +196,22 @@ module.exports = class Blueprint {
           console.log(this.blockedAccessMessage);
           break;
         }
+      }
+      case "north west": {
+        if (
+          this.obstacles.every(obstacle => {
+            let { x: xObstacle, y: yObstacle } = obstacle;
+            return --xCheck == xObstacle && subYCheck !== yObstacle;
+          })
+        ) {
+          this.x--;
+          this.y++;
+          break;
+        } else {
+          console.log(this.blockedAccessMessage);
+          break;
+        }
+      }
     }
   }
 
@@ -138,31 +221,55 @@ module.exports = class Blueprint {
       case "left":
         switch (this.cardinalDirection) {
           case "north":
+            this.cardinalDirection = "north west";
+            break;
+          case "north west":
             this.cardinalDirection = "west";
             break;
           case "east":
+            this.cardinalDirection = "north east";
+            break;
+          case "north east":
             this.cardinalDirection = "north";
             break;
           case "south":
+            this.cardinalDirection = "south east";
+            break;
+          case "south east":
             this.cardinalDirection = "east";
             break;
           case "west":
-            this.cardinalDirection = "west";
+            this.cardinalDirection = "south west";
+            break;
+          case "south west":
+            this.cardinalDirection = "south";
             break;
         }
         break;
       case "right":
         switch (this.cardinalDirection) {
           case "north":
+            this.cardinalDirection = "north east";
+            break;
+          case "north east":
             this.cardinalDirection = "east";
             break;
           case "east":
+            this.cardinalDirection = "south east";
+            break;
+          case "south east":
             this.cardinalDirection = "south";
             break;
           case "south":
+            this.cardinalDirection = "south west";
+            break;
+          case "south west":
             this.cardinalDirection = "west";
             break;
           case "west":
+            this.cardinalDirection = "north west";
+            break;
+          case "north west":
             this.cardinalDirection = "north";
             break;
         }
