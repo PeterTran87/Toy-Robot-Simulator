@@ -6,10 +6,17 @@ module.exports = class Blueprint {
     this.onTable = false;
     this.x = null;
     this.y = null;
+    this.obstacles = null;
     this.cardinalDirection = null;
     this.validCardinalDirection = ["north", "east", "west", "south"];
     this.outOfBoundMessage =
       "This command will place the robot out of the table. Please give another location";
+    this.currentCoordinateWarning =
+      "This is the current coordinate of the robot. Please give another location";
+    this.invalidAvoidanceMessage =
+      "This coordinate is outside of the table. Please give another location";
+    this.blockedAccessMessage =
+      "This coordinate is blocked. Please give another directive";
     this.invalidMessage = "Invalid command. Please try again.";
   }
 
@@ -18,10 +25,17 @@ module.exports = class Blueprint {
     let result = this.placeValidation(location);
     if (result) {
       let { x, y, cardinalDirection } = result;
-      this.onTable = true;
-      this.x = x;
-      this.y = y;
-      this.cardinalDirection = cardinalDirection;
+      if (
+        this.obstacles.every(obstacle => {
+          let { x: xObstacle, y: yObstacle } = obstacle;
+          return x !== xObstacle && y !== yObstacle;
+        })
+      ) {
+        this.onTable = true;
+        this.x = x;
+        this.y = y;
+        this.cardinalDirection = cardinalDirection;
+      } else console.log(this.blockedAccessMessage);
     }
   }
 
@@ -65,8 +79,18 @@ module.exports = class Blueprint {
         this.y++;
         break;
       case "east":
-        this.x++;
-        break;
+        if (
+          this.obstacles.every(obstacle => {
+            let { x: xObstacle, y: yObstacle } = obstacle;
+            return this.x !== xObstacle && this.y !== yObstacle;
+          })
+        ) {
+          this.x++;
+          break;
+        } else {
+          console.log(this.blockedAccessMessage);
+          break;
+        }
       case "south":
         this.y--;
         break;
@@ -111,6 +135,41 @@ module.exports = class Blueprint {
             break;
         }
         break;
+    }
+  }
+
+  avoid(location) {
+    let obstacle = this.validateObstruction(location);
+    if (obstacle) {
+      let { x, y } = obstacle;
+      if (x === this.x && y === this.y)
+        console.log(this.currentCoordinateWarning);
+      else this.obstacles.push(obstacle);
+    }
+  }
+
+  validateObstruction(location) {
+    if (location) {
+      let [horizontal, vertical] = location.split(",");
+      if (horizontal.length === 1 && vertical.length === 1) {
+        let x = parseInt(horizontal);
+        let y = parseInt(vertical);
+        if (x >= 0 && x <= 5 && y >= 0 && y <= 5) {
+          if (x === this.x && y === this.y) {
+            console.log(this.currentCoordinateWarning);
+            return false;
+          } else return { x, y };
+        } else {
+          console.log(this.invalidAvoidanceMessage);
+          return false;
+        }
+      } else {
+        console.log(this.invalidMessage);
+        return false;
+      }
+    } else {
+      console.log(this.invalidMessage);
+      return false;
     }
   }
 };

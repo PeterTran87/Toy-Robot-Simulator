@@ -26,6 +26,7 @@ module.exports = class Robot extends RobotPrototype {
       this.onTable = false;
       this.x = -1;
       this.y = -1;
+      this.obstacles = [];
       this.init();
     }
     this.report = false;

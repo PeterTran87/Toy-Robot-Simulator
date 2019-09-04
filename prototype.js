@@ -10,7 +10,7 @@ module.exports = class RobotPrototype extends Blueprint {
     this.commandString = null;
     this.action = null;
     this.report = false;
-    this.validCommands = ["place", "move", "left", "right"];
+    this.validCommands = ["place", "move", "left", "right", "avoid"];
     this.invalidLocationMessage =
       "The robot is not on the table yet. Please place it on the table first.";
     this.outOfRangeMessage =
@@ -60,10 +60,12 @@ module.exports = class RobotPrototype extends Blueprint {
     this.commandString = "";
 
     if (!this.onTable) {
-      if (directive !== "place") {
-        console.log(this.invalidLocationMessage);
-      } else {
+      if (directive === "place") {
         this.place(location);
+      } else if (directive === "avoid") {
+        this.avoid(location);
+      } else {
+        console.log(this.invalidLocationMessage);
       }
     } else {
       switch (directive) {
@@ -71,6 +73,11 @@ module.exports = class RobotPrototype extends Blueprint {
           this.commandString = "";
           this.action = "";
           this.place(location);
+          break;
+        case "avoid":
+          this.commandString = "";
+          this.action = "";
+          this.avoid(location);
           break;
         default:
           if (
