@@ -7,6 +7,7 @@ module.exports = class Blueprint {
     this.x = null;
     this.y = null;
     this.obstacles = null;
+    this.initialPlace = false;
     this.cardinalDirection = null;
     this.validCardinalDirection = ["north", "east", "west", "south"];
     this.outOfBoundMessage =
@@ -34,8 +35,11 @@ module.exports = class Blueprint {
         this.onTable = true;
         this.x = x;
         this.y = y;
-        this.cardinalDirection = cardinalDirection;
       } else console.log(this.blockedAccessMessage);
+      if (!this.initialPlace) {
+        this.cardinalDirection = cardinalDirection;
+        this.initialPlace = true;
+      }
     }
   }
 
@@ -46,17 +50,13 @@ module.exports = class Blueprint {
       if (
         horizontal.length === 1 &&
         vertical.length === 1 &&
-        this.validCardinalDirection.includes(cardinalDirection)
+        (this.initialPlace ||
+          (!this.initialPlace &&
+            this.validCardinalDirection.includes(cardinalDirection)))
       ) {
         let x = parseInt(horizontal);
         let y = parseInt(vertical);
-        if (
-          x >= 0 &&
-          x <= 5 &&
-          y >= 0 &&
-          y <= 5 &&
-          this.validCardinalDirection.includes(cardinalDirection)
-        )
+        if (x >= 0 && x <= 5 && y >= 0 && y <= 5)
           return { x, y, cardinalDirection };
         else {
           console.log(this.outOfBoundMessage);
