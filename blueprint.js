@@ -38,9 +38,9 @@ module.exports = class Blueprint {
         let y = parseInt(vertical);
         if (
           x >= 0 &&
-          x <= 4 &&
+          x <= 5 &&
           y >= 0 &&
-          y <= 4 &&
+          y <= 5 &&
           this.validCardinalDirection.includes(cardinalDirection)
         )
           return { x, y, cardinalDirection };
